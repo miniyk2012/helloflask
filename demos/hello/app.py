@@ -6,7 +6,7 @@
     :license: MIT, see LICENSE for more details.
 """
 import click
-from flask import Flask
+from flask import Flask, url_for
 
 app = Flask(__name__)
 
@@ -14,7 +14,8 @@ app = Flask(__name__)
 # the minimal Flask application
 @app.route('/')
 def index():
-    return '<h1>Hello, World!</h1>'
+    print(app.config)
+    return f'<h1>Hello, World!</h1> {url_for("greet", name="yangkai", _external=True)}'
 
 
 # bind multiple URL for one view function

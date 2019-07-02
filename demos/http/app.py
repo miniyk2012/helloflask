@@ -16,6 +16,7 @@ from jinja2.utils import generate_lorem_ipsum
 from flask import Flask, make_response, request, redirect, url_for, abort, session, jsonify
 
 app = Flask(__name__)
+print(os.getenv('SECRET_KEY', 'secret string'))
 app.secret_key = os.getenv('SECRET_KEY', 'secret string')
 
 
@@ -23,6 +24,7 @@ app.secret_key = os.getenv('SECRET_KEY', 'secret string')
 @app.route('/')
 @app.route('/hello')
 def hello():
+    print(request.full_path)
     name = request.args.get('name')
     if name is None:
         name = request.cookies.get('name', 'Human')
@@ -38,7 +40,7 @@ def hello():
 # redirect
 @app.route('/hi')
 def hi():
-    return redirect(url_for('hello'))
+    return redirect(url_for('go_back', year=100))
 
 
 # use int URL converter
