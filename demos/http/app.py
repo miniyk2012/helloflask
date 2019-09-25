@@ -14,6 +14,7 @@ except ImportError:
 from jinja2 import escape
 from jinja2.utils import generate_lorem_ipsum
 from flask import Flask, make_response, request, redirect, url_for, abort, session, jsonify
+from flask.wrappers import Response
 
 app = Flask(__name__)
 print(os.getenv('SECRET_KEY', 'secret string'))
@@ -24,7 +25,6 @@ app.secret_key = os.getenv('SECRET_KEY', 'secret string')
 @app.route('/')
 @app.route('/hello')
 def hello():
-    print(request.full_path)
     name = request.args.get('name')
     if name is None:
         name = request.cookies.get('name', 'Human')
@@ -82,8 +82,10 @@ from: Jane
 heading: Reminder
 body: Don't forget the party!
 '''
-        response = make_response(body)
+        response: Response = make_response(body)
         response.mimetype = 'text/plain'
+        print(response.is_json)
+
     elif content_type == 'html':
         body = '''<!DOCTYPE html>
 <html>
@@ -119,6 +121,7 @@ body: Don't forget the party!
         }
         }
         response = jsonify(body)
+        print(response.get_json())
         # equal to:
         # response = make_response(json.dumps(body))
         # response.mimetype = "application/json"
@@ -130,7 +133,7 @@ body: Don't forget the party!
 # set cookie
 @app.route('/set/<name>')
 def set_cookie(name):
-    response = make_response(redirect(url_for('hello')))
+    response: Response = make_response(redirect(url_for('hello')))
     response.set_cookie('name', name)
     return response
 
